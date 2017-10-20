@@ -159,7 +159,7 @@ public class LineDeserializer implements EventDeserializer {
              c = in.readChar();  
              if (c == -1)  
                  break;  
-             else if (c == this.newLineStartPrefix) {    //retreat one step  
+             else if (c == this.newLineStartPrefix) {
                  long currentPosition = in.tell();  
                  in.seek(currentPosition - 1);  
                  break;  
