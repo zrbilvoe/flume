@@ -125,7 +125,7 @@ public class LineDeserializer implements EventDeserializer {
 
   // TODO: consider not returning a final character that is a high surrogate
   // when truncating
-  private String readLine() throws IOException {
+  /** private String readLine() throws IOException {
     StringBuilder sb = new StringBuilder();
     int c;
     int readChars = 0;
@@ -145,6 +145,45 @@ public class LineDeserializer implements EventDeserializer {
         break;
       }
     }
+    */
+
+private String readLine() throws IOException {  
+    StringBuilder sb = new StringBuilder();  
+    int c;  
+    int readChars = 0;  
+    while ((c = in.readChar()) != -1) {  
+        readChars++;  
+  
+        // FIXME: support \r\n  
+        if (c == '\n') {  
+  
+            //walk more one step  
+            c = in.readChar();  
+            if (c == -1)  
+                break;  
+            else if (c == this.newLineStartPrefix) {    //retreat one step  
+                long currentPosition = in.tell();  
+                in.seek(currentPosition - 1);  
+                break;  
+            }  
+        }  
+  
+        sb.append((char)c);  
+  
+        if (readChars >= maxLineLength) {  
+            logger.warn("Line length exceeds max ({}), truncating line!",  
+                        maxLineLength);  
+            break;  
+        }  
+    }  
+  
+    if (readChars > 0) {  
+        return sb.toString();  
+    } else {  
+        return null;  
+    }  
+}  
+
 
     if (readChars > 0) {
       return sb.toString();
